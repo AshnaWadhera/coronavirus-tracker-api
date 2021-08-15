@@ -9,23 +9,14 @@ V1 = APIRouter()
 @V1.get("/all")
 async def all_categories():
     """Get all the categories."""
-    confirmed = await get_category("confirmed")
-    deaths = await get_category("deaths")
-    recovered = await get_category("recovered")
-
-    return {
-        # Data.
-        "confirmed": confirmed,
-        "deaths": deaths,
-        "recovered": recovered,
-        # Latest.
-        "latest": {
-            "confirmed": confirmed["latest"],
-            "deaths": deaths["latest"],
-            "recovered": recovered["latest"],
-        },
-    }
-
+    var_list = ['confirmed','deaths','recovered']
+    result_dict = {'latest':{}}
+    result_op = await get_category(var_list)
+    for each_category in result_op:
+        result_dict[each_category] = result_op[each_category]
+        result_op['latest'][each_category] = result_op[each_category]['latest']
+    
+    return result_op
 
 @V1.get("/confirmed")
 async def get_confirmed():
